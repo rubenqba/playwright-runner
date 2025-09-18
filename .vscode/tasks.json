@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "All dependencies",
+      "type": "shell",
+      "command": "docker compose up -d",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start MongoDB",
+      "type": "shell",
+      "command": "docker compose up -d mongo",
+      "problemMatcher": []
+    },
+  ]
+}
