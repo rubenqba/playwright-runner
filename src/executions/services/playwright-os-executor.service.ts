@@ -416,46 +416,6 @@ export class PlaywrightOSExecutorService implements IPlaywrightExecutor {
     await fs.writeFile(path.join(executionDir, testFileName), testCode);
   }
 
-  private isTypeScriptCode(code: string): boolean {
-    // Check for TypeScript-specific syntax
-    const tsPatterns = [
-      /:\s*\w+(\[\])?(\s*\||\s*&|\s*=|\s*,|\s*\)|\s*;)/,
-      /interface\s+\w+/,
-      /type\s+\w+\s*=/,
-      /as\s+\w+/,
-      /<\w+>/,
-    ];
-
-    return tsPatterns.some((pattern) => pattern.test(code));
-  }
-
-  private convertTypeScriptToJavaScript(tsCode: string): string {
-    let jsCode = tsCode;
-
-    // Remove type annotations
-    jsCode = jsCode.replace(/:\s*[\w[\]<>|&,\s]+(?=\s*[=,;)}\]])/g, '');
-
-    // Remove interface declarations
-    jsCode = jsCode.replace(/interface\s+\w+\s*\{[^}]*\}/g, '');
-
-    // Remove type aliases
-    jsCode = jsCode.replace(/type\s+\w+\s*=[^;]+;/g, '');
-
-    // Remove generic type parameters
-    jsCode = jsCode.replace(/<[\w\s,|&]+>/g, '');
-
-    // Remove 'as' type assertions
-    jsCode = jsCode.replace(/\s+as\s+\w+/g, '');
-
-    // Fix imports
-    jsCode = jsCode.replace(
-      /import.*from\s*['"]@playwright\/test['"];?/,
-      "import { test, expect } from '@playwright/test';",
-    );
-
-    return jsCode;
-  }
-
   private async ensurePlaywrightAvailable(executionDir: string): Promise<void> {
     // Check if Playwright is globally available
     try {
