@@ -3,10 +3,7 @@ import { Document } from 'mongoose';
 import { type BrowserType, BrowserTypeSchema, Execution, type ExecutionStatus } from '../types/execution.types';
 
 @Schema({ versionKey: false, timestamps: { createdAt: 'created', updatedAt: 'updated' } })
-export class ExecutionDocument extends Document implements Execution {
-  @Prop({ required: true })
-  declare id: string;
-
+export class ExecutionDocument extends Document implements Omit<Execution, 'id' | 'created' | 'updated'> {
   @Prop({ required: true })
   recording: string;
 

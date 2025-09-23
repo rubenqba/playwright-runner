@@ -41,14 +41,12 @@ describe('ExecutionController', () => {
     controller = app.get<ExecutionController>(ExecutionController);
   });
 
-  describe('root', () => {
-    it('should return a new execution', () => {
-      const input = createMockExecution();
-      expect(controller.executeTest(input)).resolves.toEqual({
-        executionId: 'saved-execution-id',
-        status: 'queued',
-        success: true,
-      });
+  it('should return a new execution', () => {
+    const input = createMockExecution();
+    expect(controller.executeTest(input)).resolves.toEqual({
+      executionId: 'saved-execution-id',
+      status: 'queued',
+      success: true,
     });
   });
 });

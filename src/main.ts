@@ -12,4 +12,4 @@ async function bootstrap() {
     log.log(`Server is running on port ${port}`);
   });
 }
-bootstrap();
+void bootstrap();

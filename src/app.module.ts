@@ -16,6 +16,7 @@ import { BullModule } from '@nestjs/bull';
         try {
           return envSchema.parse(config);
         } catch (error) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           console.error('Config validation error:', z.prettifyError(error));
           throw error;
         }

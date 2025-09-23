@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { TestStatusSchema, type TestStatus, type ExecutionDetail } from '../types/execution.types';
+import { ExecutionDocument } from './execution.schema';
 
-@Schema({ timestamps: { createdAt: 'created', updatedAt: 'updated' } })
+@Schema({ versionKey: false, timestamps: { createdAt: 'created', updatedAt: 'updated' } })
 export class ExecutionDetailDocument extends Document implements ExecutionDetail {
-  @Prop({ required: true })
+  @Prop({ required: true, ref: ExecutionDocument.name })
   execution: string;
 
   @Prop({ required: true })

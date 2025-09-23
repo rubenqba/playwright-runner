@@ -1,12 +1,19 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ExecutionMetricsDocument, ExecutionMetricsDBSchema } from './schemas/execution-metrics.schema';
-import { ExecutionDocument, ExecutionDBSchema } from './schemas/execution.schema';
-import { ExecutionDetailDocument, ExecutionDetailDBSchema } from './schemas/execution-detail.schema';
+import {
+  ExecutionDocument,
+  ExecutionMetricsDocument,
+  ExecutionDetailDocument,
+  ExecutionFileDocument,
+  ExecutionDBSchema,
+  ExecutionMetricsDBSchema,
+  ExecutionDetailDBSchema,
+  ExecutionFileDBSchema,
+} from './schemas';
 import { ExecutionController } from './executions.controller';
 import { ExecutionProcessor } from './execution.processor';
-import { PLAYWRIGHT_EXECUTOR_TOKEN, PlaywrightCliExecutorService } from './services';
+import { PLAYWRIGHT_EXECUTOR_TOKEN, PlaywrightOSExecutorService } from './services';
 
 @Module({
   imports: [
@@ -17,6 +24,7 @@ import { PLAYWRIGHT_EXECUTOR_TOKEN, PlaywrightCliExecutorService } from './servi
       { name: ExecutionDocument.name, schema: ExecutionDBSchema, collection: 'executions' },
       { name: ExecutionMetricsDocument.name, schema: ExecutionMetricsDBSchema, collection: 'execution_metrics' },
       { name: ExecutionDetailDocument.name, schema: ExecutionDetailDBSchema, collection: 'execution_details' },
+      { name: ExecutionFileDocument.name, schema: ExecutionFileDBSchema, collection: 'execution_files' },
     ]),
   ],
   controllers: [ExecutionController],
@@ -24,7 +32,7 @@ import { PLAYWRIGHT_EXECUTOR_TOKEN, PlaywrightCliExecutorService } from './servi
     ExecutionProcessor,
     {
       provide: PLAYWRIGHT_EXECUTOR_TOKEN,
-      useClass: PlaywrightCliExecutorService, // 🔄 Cambiar por PlaywrightInlineExecutorService
+      useClass: PlaywrightOSExecutorService,
     },
   ],
 })

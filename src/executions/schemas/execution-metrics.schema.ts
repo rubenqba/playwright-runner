@@ -1,13 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import type { ExecutionMetrics } from '@/executions/types/execution.types';
+import { ExecutionDocument } from './execution.schema';
 
-@Schema({ timestamps: { createdAt: 'created', updatedAt: 'updated' } })
-export class ExecutionMetricsDocument
-  extends Document
-  implements ExecutionMetrics
-{
-  @Prop({ required: true })
+@Schema({ versionKey: false, timestamps: { createdAt: 'created', updatedAt: 'updated' } })
+export class ExecutionMetricsDocument extends Document implements ExecutionMetrics {
+  @Prop({ required: true, ref: ExecutionDocument.name })
   execution: string;
 
   @Prop({ required: true, min: 0 })
@@ -41,6 +39,4 @@ export class ExecutionMetricsDocument
   videosCount: number;
 }
 
-export const ExecutionMetricsDBSchema = SchemaFactory.createForClass(
-  ExecutionMetricsDocument,
-);
+export const ExecutionMetricsDBSchema = SchemaFactory.createForClass(ExecutionMetricsDocument);
