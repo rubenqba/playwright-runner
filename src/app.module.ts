@@ -1,38 +1,31 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ExecutionsModule } from './executions/executions.module';
 import { ConfigModule } from '@nestjs/config';
-import { envSchema } from './config/env.schema';
-import { z } from 'zod';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BullModule } from '@nestjs/bull';
+import { ExecutionsModule } from '@/executions/executions.module';
+import { StorageModule } from '@/storage/storage.module';
+import mongodbConfig from '@/config/mongodb.config';
+import storageConfig from '@/config/storage.config';
+import redisConfig from '@/config/redis.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: ['.env.local', '.env'],
-      validate: (config) => {
-        try {
-          return envSchema.parse(config);
-        } catch (error) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          console.error('Config validation error:', z.prettifyError(error));
-          throw error;
-        }
-      },
       isGlobal: true, // Makes ConfigService available globally
+      expandVariables: true, // Expand environment variables
+      load: [storageConfig], // You can add custom configuration files here
     }),
-    MongooseModule.forRoot('mongodb://localhost:27017/playwright'), // Replace with your MongoDB connection string
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
+    MongooseModule.forRootAsync({
+      useFactory: mongodbConfig,
+    }),
+    BullModule.forRootAsync({
+      useFactory: redisConfig,
     }),
     ExecutionsModule,
+    StorageModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

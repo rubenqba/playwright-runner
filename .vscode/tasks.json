@@ -4,13 +4,19 @@
     {
       "label": "All dependencies",
       "type": "shell",
-      "command": "docker compose up -d",
-      "problemMatcher": []
+      // "command": "docker compose up -d",
+      "dependsOn": ["Start MongoDB", "Start Minio"],
     },
     {
       "label": "Start MongoDB",
       "type": "shell",
       "command": "docker compose up -d mongo",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Minio",
+      "type": "shell",
+      "command": "docker compose up -d minio",
       "problemMatcher": []
     },
   ]

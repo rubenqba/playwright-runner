@@ -5,27 +5,51 @@ import {
   ExecutionDocument,
   ExecutionMetricsDocument,
   ExecutionDetailDocument,
-  ExecutionFileDocument,
   ExecutionDBSchema,
   ExecutionMetricsDBSchema,
   ExecutionDetailDBSchema,
-  ExecutionFileDBSchema,
 } from './schemas';
 import { ExecutionController } from './executions.controller';
 import { ExecutionProcessor } from './execution.processor';
 import { PLAYWRIGHT_EXECUTOR_TOKEN, PlaywrightOSExecutorService } from './services';
+import { StorageModule } from '@/storage/storage.module';
+import { mongooseTransformPlugin } from '@/common/plugins/mongoose-transform.plugin';
 
 @Module({
   imports: [
     BullModule.registerQueue({
       name: 'test-execution',
     }),
-    MongooseModule.forFeature([
-      { name: ExecutionDocument.name, schema: ExecutionDBSchema, collection: 'executions' },
-      { name: ExecutionMetricsDocument.name, schema: ExecutionMetricsDBSchema, collection: 'execution_metrics' },
-      { name: ExecutionDetailDocument.name, schema: ExecutionDetailDBSchema, collection: 'execution_details' },
-      { name: ExecutionFileDocument.name, schema: ExecutionFileDBSchema, collection: 'execution_files' },
+    MongooseModule.forFeatureAsync([
+      {
+        name: ExecutionDocument.name,
+        collection: 'executions',
+        useFactory: () => {
+          const schema = ExecutionDBSchema;
+          schema.plugin(mongooseTransformPlugin);
+          return schema;
+        },
+      },
+      {
+        name: ExecutionMetricsDocument.name,
+        collection: 'execution_metrics',
+        useFactory: () => {
+          const schema = ExecutionMetricsDBSchema;
+          schema.plugin(mongooseTransformPlugin);
+          return schema;
+        },
+      },
+      {
+        name: ExecutionDetailDocument.name,
+        collection: 'execution_details',
+        useFactory: () => {
+          const schema = ExecutionDetailDBSchema;
+          schema.plugin(mongooseTransformPlugin);
+          return schema;
+        },
+      },
     ]),
+    StorageModule,
   ],
   controllers: [ExecutionController],
   providers: [

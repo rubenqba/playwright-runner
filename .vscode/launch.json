@@ -6,18 +6,52 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/@nestjs/cli/bin/nest.js",
-      "args": ["start", "--debug", "--watch"],
+      "args": [
+        "start",
+        "--debug",
+        "--watch"
+      ],
       "console": "integratedTerminal",
       "restart": true,
       "env": {
         "NODE_ENV": "development"
       },
-      "skipFiles": ["<node_internals>/**"],
-      "runtimeArgs": ["--nolazy"],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": [
+        "--nolazy"
+      ],
       "sourceMaps": true,
       "cwd": "${workspaceFolder}",
       "outputCapture": "std",
-      "preLaunchTask": "Start MongoDB"
+      "preLaunchTask": "All dependencies"
+    },
+    {
+      "name": "Debug NestJS App with Dependencies",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/@nestjs/cli/bin/nest.js",
+      "args": [
+        "start",
+        "--debug",
+        "--watch"
+      ],
+      "console": "integratedTerminal",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": [
+        "--nolazy"
+      ],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}",
+      "outputCapture": "std",
+      "preLaunchTask": "Start Dependencies"
     },
     {
       "name": "Debug NestJS App (ts-node)",
@@ -35,7 +69,9 @@
       "env": {
         "NODE_ENV": "development"
       },
-      "skipFiles": ["<node_internals>/**"],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
       "sourceMaps": true,
       "cwd": "${workspaceFolder}",
       "outputCapture": "std"
@@ -45,7 +81,11 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": ["--runInBand", "--no-cache", "--detectOpenHandles"],
+      "args": [
+        "--runInBand",
+        "--no-cache",
+        "--detectOpenHandles"
+      ],
       "runtimeArgs": [
         "--inspect-brk",
         "-r",
@@ -57,7 +97,9 @@
       "env": {
         "NODE_ENV": "test"
       },
-      "skipFiles": ["<node_internals>/**"],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
       "sourceMaps": true,
       "cwd": "${workspaceFolder}",
       "outputCapture": "std"
@@ -70,7 +112,9 @@
       "restart": true,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "${workspaceFolder}",
-      "skipFiles": ["<node_internals>/**"],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
       "sourceMaps": true
     }
   ]

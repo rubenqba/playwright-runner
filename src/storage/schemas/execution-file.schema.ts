@@ -1,9 +1,9 @@
-import { Document } from 'mongoose';
-import { ExecutionFile, type FileType, FileTypeSchema } from '../types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ExecutionDocument } from './execution.schema';
+import { Document } from 'mongoose';
+import { ExecutionFile, type FileType, FileTypeSchema } from '@/storage/types';
+import { ExecutionDocument } from '@/executions/schemas/execution.schema';
 
-@Schema({ virtuals: true, versionKey: false, timestamps: { createdAt: 'created', updatedAt: 'updated' } })
+@Schema({ versionKey: false, timestamps: { createdAt: 'created', updatedAt: 'updated' } })
 export class ExecutionFileDocument extends Document implements Omit<ExecutionFile, 'id' | 'created'> {
   @Prop({ required: true, ref: ExecutionDocument.name })
   execution!: string;

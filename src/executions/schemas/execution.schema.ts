@@ -1,6 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { type BrowserType, BrowserTypeSchema, Execution, type ExecutionStatus } from '../types/execution.types';
+import {
+  type BrowserType,
+  BrowserTypeSchema,
+  Execution,
+  type ExecutionStatus,
+} from '@/executions/types/execution.types';
 
 @Schema({ versionKey: false, timestamps: { createdAt: 'created', updatedAt: 'updated' } })
 export class ExecutionDocument extends Document implements Omit<Execution, 'id' | 'created' | 'updated'> {
@@ -46,3 +51,12 @@ export class ExecutionDocument extends Document implements Omit<Execution, 'id' 
 }
 
 export const ExecutionDBSchema = SchemaFactory.createForClass(ExecutionDocument);
+
+// ExecutionDBSchema.set('toJSON', {
+//   transform: (_doc, ret) => {
+//     ret.id = ret._id;
+//     delete ret._id;
+//     return ret;
+//   },
+//   virtuals: true,
+// });

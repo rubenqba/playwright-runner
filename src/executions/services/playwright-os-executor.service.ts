@@ -1,28 +1,22 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { spawn, ChildProcess } from 'child_process';
-import { v4 as uuidv4 } from 'uuid';
 import * as os from 'os';
 import { IPlaywrightExecutor } from './executor.interface';
-import {
-  Execution,
-  ExecutionSchema,
-  ExecutionDetail,
-  ExecutionFile,
-  ExecutionMetrics,
-  ExecutionStatus,
-} from '../types';
+import { Execution, ExecutionSchema, ExecutionDetail, ExecutionMetrics, ExecutionStatus } from '@/executions/types';
+import { ExecutionFile } from '@/storage/types';
 import {
   ExecutionDocument,
   ExecutionMetricsDocument,
   ExecutionDetailDocument,
-  ExecutionFileDocument,
-} from '../schemas';
+  PlaywrightJsonReport,
+  ResultSpec,
+} from '@/executions/schemas';
 import { PlaywrightTestConfig, Project, devices } from '@playwright/test';
-import { PlaywrightJsonReport, ResultSpec } from '../schemas/playwright-result.schema';
+import { StorageService } from '@/storage/services/storage.service';
 
 interface ProcessedResults {
   status: ExecutionStatus;
@@ -42,50 +36,6 @@ interface PlaywrightExecutionResult {
     avgCpuPercent: number;
   };
 }
-
-// interface PlaywrightJsonReport {
-//   config: any;
-//   suites: Array<{
-//     title: string;
-//     file: string;
-//     specs: Array<{
-//       title: string;
-//       ok: boolean;
-//       tests: Array<{
-//         timeout: number;
-//         annotations: any[];
-//         expectedStatus: string;
-//         projectId: string;
-//         projectName: string;
-//         results: Array<{
-//           workerIndex: number;
-//           status: string;
-//           duration: number;
-//           errors: Array<{ message: string; location?: any }>;
-//           stdout: any[];
-//           stderr: any[];
-//           retry: number;
-//           startTime: string;
-//           attachments: Array<{
-//             name: string;
-//             path: string;
-//             contentType: string;
-//           }>;
-//         }>;
-//         status: string;
-//       }>;
-//     }>;
-//   }>;
-//   errors: any[];
-//   stats: {
-//     startTime: string;
-//     duration: number;
-//     expected: number;
-//     unexpected: number;
-//     flaky: number;
-//     skipped: number;
-//   };
-// }
 
 interface ProcessMetrics {
   memoryUsage: number;
@@ -170,7 +120,7 @@ export class PlaywrightOSExecutorService implements IPlaywrightExecutor {
     @InjectModel(ExecutionDocument.name) private executionModel: Model<ExecutionDocument>,
     @InjectModel(ExecutionMetricsDocument.name) private metricsModel: Model<ExecutionMetricsDocument>,
     @InjectModel(ExecutionDetailDocument.name) private executionDetailModel: Model<ExecutionDetailDocument>,
-    @InjectModel(ExecutionFileDocument.name) private executionFileModel: Model<ExecutionFileDocument>,
+    @Inject() private storage: StorageService,
   ) {
     void this.initializeService();
   }
@@ -219,7 +169,7 @@ export class PlaywrightOSExecutorService implements IPlaywrightExecutor {
       await this.persistResults(sanitizedExecution.id, processedResults);
 
       // Step 5: Cleanup resources
-      // await this.cleanupExecution(executionDir);
+      await this.cleanupExecution(executionDir);
 
       await this.updateExecutionStatus(sanitizedExecution.id, processedResults.status, undefined, new Date());
       this.logger.log(`Execution ${sanitizedExecution.id} completed successfully`);
@@ -685,17 +635,11 @@ export class PlaywrightOSExecutorService implements IPlaywrightExecutor {
     const testDetails: ProcessedResults['testDetails'] = [];
     const files: ProcessedResults['files'] = [];
 
-    // if (result.resultsJson) {
-    //   // Process Playwright JSON results
-    //   for (const suite of result.resultsJson.suites || []) {
-    //     const specs = (suite.specs || []).concat(suite.suites?.flatMap((s) => s.specs || []) || []);
     for (const spec of specs) {
       const { details, files: specFiles } = await this.processSpec(spec);
       testDetails.push(...details);
       files.push(...specFiles);
     }
-    //   }
-    // }
 
     // Scan for additional artifacts
     const additionalFiles = await this.scanForArtifacts(executionDir);
@@ -814,15 +758,20 @@ export class PlaywrightOSExecutorService implements IPlaywrightExecutor {
     }
 
     // Persist files
-    for (const file of results.files) {
-      const executionFile = new this.executionFileModel({
-        id: uuidv4(),
-        execution: executionId,
-        ...file,
-        created: new Date(),
-      });
-      await executionFile.save();
-    }
+    await Promise.all(
+      results.files.map(async (file) =>
+        this.storage.uploadExecutionFile({
+          execution: executionId,
+          file: {
+            buffer: await fs.readFile(file.filePath),
+            originalname: file.fileName,
+            mimetype: file.mimeType,
+            size: file.fileSize,
+          },
+          fileType: file.fileType,
+        }),
+      ),
+    );
 
     this.logger.log(
       `Persisted results for execution ${executionId}: ${results.testDetails.length} tests, ${results.files.length} files`,

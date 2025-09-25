@@ -5,11 +5,15 @@ import { chromium, Browser, Page } from 'playwright';
 import * as fs from 'fs/promises';
 import * as fsSync from 'fs';
 import * as path from 'path';
-import { Execution, ExecutionDetail, ExecutionMetrics, TestStatus } from '../types/execution.types';
-import { TestExecutionResult, ExecutionUpdateData } from '../types/execution-results.types';
-import { ExecutionDocument } from '../schemas/execution.schema';
-import { ExecutionMetricsDocument } from '../schemas/execution-metrics.schema';
-import { ExecutionDetailDocument } from '../schemas/execution-detail.schema';
+import {
+  Execution,
+  ExecutionDetail,
+  ExecutionMetrics,
+  TestStatus,
+  TestExecutionResult,
+  ExecutionUpdateData,
+} from '@/executions/types';
+import { ExecutionDocument, ExecutionMetricsDocument, ExecutionDetailDocument } from '@/executions/schemas';
 import { IPlaywrightExecutor } from './executor.interface';
 
 @Injectable()
