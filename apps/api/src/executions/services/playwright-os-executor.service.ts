@@ -764,7 +764,7 @@ export class PlaywrightOSExecutorService implements IPlaywrightExecutor {
           execution: executionId,
           file: {
             buffer: await fs.readFile(file.filePath),
-            originalname: file.fileName,
+            originalName: file.fileName,
             mimetype: file.mimeType,
             size: file.fileSize,
           },

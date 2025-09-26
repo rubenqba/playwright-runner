@@ -8,7 +8,7 @@ export const UploadFileSchema = z.object({
   file: z.instanceof(Buffer).or(
     z.object({
       buffer: z.instanceof(Buffer),
-      originalname: z.string(),
+      originalName: z.string(),
       mimetype: z.string(),
       size: z.number(),
     }),

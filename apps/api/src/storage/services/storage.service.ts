@@ -45,7 +45,7 @@ export class StorageService {
         originalSize = fileBuffer.length;
       } else {
         fileBuffer = validatedDto.file.buffer;
-        originalName = validatedDto.file.originalname;
+        originalName = validatedDto.file.originalName;
         mimeType = validatedDto.file.mimetype;
         originalSize = validatedDto.file.size;
       }
