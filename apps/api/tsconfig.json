@@ -3,16 +3,14 @@
   "compilerOptions": {
     "declaration": false,
     "outDir": "../../dist/apps/api",
-    "baseUrl": "./",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": [ "apps/api/src/*" ],
+      // Paths de la biblioteca compartida (copiados del tsconfig raíz)
+      "@cmx-replayer/shared": ["libs/shared/src"],
+      "@cmx-replayer/shared/*": ["libs/shared/src/*"],
     }
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": [ "src/**/*" ],
   "exclude": [
     "node_modules",
     "dist",

@@ -4,9 +4,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BullModule } from '@nestjs/bull';
 import { ExecutionsModule } from '@/executions/executions.module';
 import { StorageModule } from '@/storage/storage.module';
+import { RecordingsModule } from './recordings/recordings.module';
 import mongodbConfig from '@/config/mongodb.config';
 import storageConfig from '@/config/storage.config';
 import redisConfig from '@/config/redis.config';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 
 @Module({
   imports: [
@@ -24,8 +27,17 @@ import redisConfig from '@/config/redis.config';
     }),
     ExecutionsModule,
     StorageModule,
+    RecordingsModule,
   ],
-  controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ZodValidationPipe,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ZodSerializerInterceptor,
+    },
+  ],
 })
 export class AppModule {}
