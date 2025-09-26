@@ -1,3 +1,4 @@
+import { DateTimeSchema } from '@/common/schemas';
 import { z } from 'zod';
 
 export const ExecutionStatusSchema = z.enum(['queued', 'running', 'completed', 'failed', 'cancelled']);
@@ -19,7 +20,7 @@ export type BrowserType = z.infer<typeof BrowserTypeSchema>;
 export const ExecutionSchema = z.object({
   id: z.string().describe('Unique identifier for the execution'),
   recording: z.string().describe('Recording ID associated with this execution'),
-  status: ExecutionStatusSchema.describe('Current status of the execution'),
+  status: ExecutionStatusSchema.default('queued').describe('Current status of the execution'),
   browser: BrowserTypeSchema.default('chromium').describe('Browser used for the execution'),
   baseUrl: z.url().optional().describe('Initial URL for the test execution'),
   executionConfig: z.record(z.string(), z.unknown()).optional().describe('Configuration for the test execution'),
@@ -28,10 +29,10 @@ export const ExecutionSchema = z.object({
 
   code: z.string().describe('The actual test code as a string'),
 
-  created: z.coerce.date().describe('Timestamp when the execution was created'),
-  updated: z.coerce.date().describe('Timestamp when the execution was last updated'),
-  started: z.coerce.date().optional().describe('Timestamp when the execution was started'),
-  completed: z.coerce.date().optional().describe('Timestamp when the execution was completed'),
+  created: DateTimeSchema.describe('Timestamp when the execution was created'),
+  updated: DateTimeSchema.describe('Timestamp when the execution was last updated'),
+  started: DateTimeSchema.optional().describe('Timestamp when the execution was started'),
+  completed: DateTimeSchema.optional().describe('Timestamp when the execution was completed'),
 });
 
 export type Execution = z.infer<typeof ExecutionSchema>;
@@ -48,7 +49,7 @@ export const ExecutionMetricsSchema = z.object({
   cpuUsagePercent: z.number().optional().describe('Average CPU usage percentage'),
   screenshotsCount: z.number().int().min(0).default(0).describe('Number of screenshots taken during the execution'),
   videosCount: z.number().int().min(0).default(0).describe('Number of videos recorded during the execution'),
-  created: z.date().optional().describe('Timestamp when the metrics were recorded'),
+  created: DateTimeSchema.optional().describe('Timestamp when the metrics were recorded'),
 });
 
 export type ExecutionMetrics = z.infer<typeof ExecutionMetricsSchema>;
@@ -60,13 +61,13 @@ export const ExecutionDetailSchema = z.object({
   title: z.string().describe('Title of the test'),
   status: TestStatusSchema,
   durationMs: z.number().int().min(0).describe('Duration of the test in milliseconds'),
-  startedAt: z.coerce.date().describe('Timestamp when the test started'),
-  completedAt: z.coerce.date().describe('Timestamp when the test completed'),
+  startedAt: DateTimeSchema.describe('Timestamp when the test started'),
+  completedAt: DateTimeSchema.describe('Timestamp when the test completed'),
   errorMessage: z.string().optional().describe('Error message if the test failed'),
   screenshotPath: z.string().optional().describe('Path to the screenshot if taken'),
   videoPath: z.string().optional().describe('Path to the video if recorded'),
   hookDurations: z.record(z.string(), z.number()).optional().describe('Duration of each hook in milliseconds'),
-  created: z.coerce.date().describe('Timestamp when the test was created'),
+  created: DateTimeSchema.describe('Timestamp when the test was created'),
 });
 
 export type ExecutionDetail = z.infer<typeof ExecutionDetailSchema>;

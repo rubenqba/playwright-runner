@@ -10,6 +10,7 @@ import storageConfig from '@/config/storage.config';
 import redisConfig from '@/config/redis.config';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
+import { PlaywrightModule } from './playwright/playwright.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
     ExecutionsModule,
     StorageModule,
     RecordingsModule,
+    PlaywrightModule,
   ],
   providers: [
     {

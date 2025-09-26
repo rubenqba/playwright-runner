@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TestRecordingMongo, TestRecordingMongoDBSchema } from './schemas';
 import { mongooseTransformPlugin } from '@/common/plugins/mongoose-transform.plugin';
 import { RecordingsController, RecordingExecutionController } from './controllers';
+import { ExecutionsModule } from '@/executions/executions.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RecordingsController, RecordingExecutionController } from './controller
         },
       },
     ]),
+    ExecutionsModule,
   ],
   providers: [RecordingsService],
   controllers: [RecordingsController, RecordingExecutionController],

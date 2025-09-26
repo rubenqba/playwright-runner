@@ -14,6 +14,7 @@ import { ExecutionProcessor } from './execution.processor';
 import { PLAYWRIGHT_EXECUTOR_TOKEN, PlaywrightOSExecutorService } from './services';
 import { StorageModule } from '@/storage/storage.module';
 import { mongooseTransformPlugin } from '@/common/plugins/mongoose-transform.plugin';
+import { ExecutionsService } from './services/executions.service';
 
 @Module({
   imports: [
@@ -58,6 +59,8 @@ import { mongooseTransformPlugin } from '@/common/plugins/mongoose-transform.plu
       provide: PLAYWRIGHT_EXECUTOR_TOKEN,
       useClass: PlaywrightOSExecutorService,
     },
+    ExecutionsService,
   ],
+  exports: [ExecutionsService],
 })
 export class ExecutionsModule {}

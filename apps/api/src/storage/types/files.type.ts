@@ -1,3 +1,4 @@
+import { DateTimeSchema } from '@/common/schemas';
 import { z } from 'zod';
 
 export const FileTypeSchema = z.enum(['video', 'screenshot', 'log', 'report']);
@@ -13,8 +14,8 @@ export const ExecutionFileSchema = z.object({
   mimeType: z.string().describe('MIME type of the file'),
   fileSize: z.number().int().min(0).describe('Size of the file in bytes'),
   metadata: z.record(z.string(), z.unknown()).optional().describe('Additional metadata about the file'),
-  expiresAt: z.coerce.date().optional().describe('Timestamp when the file is considered expired'),
-  created: z.coerce.date().describe('Timestamp when the file was created'),
+  expiresAt: DateTimeSchema.optional().describe('Timestamp when the file is considered expired'),
+  created: DateTimeSchema.describe('Timestamp when the file was created'),
 });
 
 export type ExecutionFile = z.infer<typeof ExecutionFileSchema>;

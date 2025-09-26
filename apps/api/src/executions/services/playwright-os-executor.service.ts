@@ -859,19 +859,19 @@ export class PlaywrightOSExecutorService implements IPlaywrightExecutor {
 
   private async updateExecutionStatus(
     id: string,
-    status: string,
+    status: ExecutionStatus,
     startedAt?: Date,
     completedAt?: Date,
     errorMessage?: string,
   ): Promise<void> {
     const updateData: Partial<Pick<ExecutionDocument, 'status' | 'started' | 'completed' | 'errorMessage'>> = {
-      status: status as ExecutionDocument['status'],
+      status,
     };
     if (startedAt) updateData.started = startedAt;
     if (completedAt) updateData.completed = completedAt;
     if (errorMessage) updateData.errorMessage = errorMessage;
 
-    await this.executionModel.findOneAndUpdate({ id }, updateData);
+    await this.executionModel.findByIdAndUpdate(id, updateData);
   }
 
   private async ensureOutputDirectory(): Promise<void> {
