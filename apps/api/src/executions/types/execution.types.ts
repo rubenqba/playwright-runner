@@ -1,11 +1,9 @@
 import { DateTimeSchema } from '@/common/schemas';
+import { SourceTypeSchema } from '@cmx-replayer/shared';
 import { z } from 'zod';
 
 export const ExecutionStatusSchema = z.enum(['queued', 'running', 'completed', 'failed', 'cancelled']);
 export type ExecutionStatus = z.infer<typeof ExecutionStatusSchema>;
-
-export const SourceTypeSchema = z.enum(['cypress', 'playwright']);
-export type SourceType = z.infer<typeof SourceTypeSchema>;
 
 export const ExecutionSourceSchema = z.object({
   type: SourceTypeSchema.describe('Type of the test source, e.g., cypress or playwright'),

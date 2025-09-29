@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { ExecutionStatusSchema, SourceTypeSchema } from '../types';
+import { ExecutionStatusSchema } from '../types';
+import { SourceTypeSchema } from '@cmx-replayer/shared';
 
 export const ExecutionEnqueueInputSchema = z.object({
   recording: z.string().min(2).max(100).describe('Recording ID to be executed'),

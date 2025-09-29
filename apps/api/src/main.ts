@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
+import { Logger, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { cleanupOpenApiDoc } from 'nestjs-zod';
 
@@ -10,7 +10,14 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 3000; // Default to 3000 if not found
 
-  app.setGlobalPrefix('api/v2');
+  // defining global prefix
+  app.setGlobalPrefix('api');
+
+  // enabling fixed versioning
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '2',
+  });
 
   const openApiDoc = SwaggerModule.createDocument(
     app,

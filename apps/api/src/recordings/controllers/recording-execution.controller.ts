@@ -1,10 +1,10 @@
 import { ExecutionsService } from '@/executions/services/executions.service';
-import { ExecutionStatusSchema, SourceTypeSchema } from '@/executions/types';
+import { ExecutionStatusSchema } from '@/executions/types';
 import { Body, Controller, Logger, Param, Post } from '@nestjs/common';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { RecordingsService } from '../recordings.service';
-import { TestRecording } from '@cmx-replayer/shared';
+import { SourceTypeSchema, TestRecording } from '@cmx-replayer/shared';
 import { generatePlaywrightSpec } from '@/playwright/utils';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 

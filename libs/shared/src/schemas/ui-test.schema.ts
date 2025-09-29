@@ -2,6 +2,15 @@ import { z } from 'zod';
 import { RecordingSchema } from './ui-recording.schema';
 import { pageOf, queryOf } from './pagination.schema';
 
+export const SourceTypeSchema = z.enum(['cypress', 'playwright']);
+export type SourceType = z.infer<typeof SourceTypeSchema>;
+
+export const SourceCodeSchema = z.object({
+  script: z.string().describe('The script content of the test recording'),
+  type: SourceTypeSchema.describe('The type of the test recording, e.g., cypress or playwright'),
+});
+export type SourceCode = z.infer<typeof SourceCodeSchema>;
+
 export const TestRecordingSchema = z.object({
   id: z.string().describe('Unique identifier for the test recording'),
   name: z.string().describe('Test recording name'),
@@ -9,6 +18,7 @@ export const TestRecordingSchema = z.object({
   url: z.url().describe('URL of the page where the recording started'),
   category: z.string().describe('Category of the recording'),
   recordings: RecordingSchema.array().describe('List of test recordings'),
+  code: SourceCodeSchema.nullish().describe('The source code and type of the test recording'),
   created: z.iso
     .datetime()
     .transform((d) => new Date(d))
