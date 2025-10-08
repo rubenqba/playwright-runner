@@ -27,6 +27,13 @@
       "cwd": "${workspaceFolder}",
       "outputCapture": "std",
       "preLaunchTask": "All dependencies"
-    }
+    },
+    {
+      "name": "Console App",
+      "type": "chrome",
+      "request": "launch",
+      "preLaunchTask": "npm: start",
+      "url": "http://localhost:4200/"
+    },
   ]
 }
